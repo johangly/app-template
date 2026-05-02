@@ -19,10 +19,6 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL}
-        VITE_SOCKET_API_BASE: ${VITE_SOCKET_API_BASE}
-        VITE_SOCKET_API_END: ${VITE_SOCKET_API_END}
-        VITE_MAX_MESSAGES_PER_CAMPAIGN: ${VITE_MAX_MESSAGES_PER_CAMPAIGN}
-        VITE_PRODUCTION_URL: ${VITE_PRODUCTION_URL}
     ports:
       - "8080:80"
     env_file:

@@ -260,7 +260,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <div className="flex items-center justify-center px-10">
                   {/* <img src={logoLight} alt="logo" className="block dark:hidden" />
                   <img src={logoDark} alt="logo" className="hidden dark:block" /> */}
-                  <span className="text-xl font-bold text-gray-900 dark:text-white">VerificationSim</span>
+                  <span className="text-xl font-bold text-gray-900 dark:text-white">YourApp</span>
                 </div>
               </motion.div>
             </>
@@ -277,7 +277,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               <div className="flex items-center justify-center px-1">
                 {/* <img src={logoLightMini} alt="logo" className="block dark:hidden" />
                 <img src={logoDarkMini} alt="logo" className="hidden dark:block" /> */}
-                <span className="text-xl font-bold text-gray-900 dark:text-white">VS</span>
+                <span className="text-xl font-bold text-gray-900 dark:text-white">YA</span>
               </div>
             </motion.div>
           )}

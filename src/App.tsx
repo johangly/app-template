@@ -7,13 +7,13 @@ import {
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { Layout } from "./components/Layout";
 import { HomePage } from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage.tsx";
+import LoginPage from "./pages/LoginPage";
 import { ReactNode } from "react";
-import { AuthProvider } from "./contexts/AuthContext.tsx";
-import { useAuth } from "./hooks/useAuth.tsx";
-import UsersPage from "./pages/UsersPage.tsx";
-import UserForm from "./components/UserForm.tsx";
-import RolesPage from "./pages/RolesPage.tsx";
+import { AuthProvider } from "./contexts/AuthContext";
+import { useAuth } from "./hooks/useAuth";
+import UsersPage from "./pages/UsersPage";
+import UserForm from "./components/UserForm";
+import RolesPage from "./pages/RolesPage";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { motion } from 'framer-motion';
 
