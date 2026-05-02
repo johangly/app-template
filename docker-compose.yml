@@ -1,0 +1,35 @@
+services:
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - app_net
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+        VITE_SOCKET_API_BASE: ${VITE_SOCKET_API_BASE}
+        VITE_SOCKET_API_END: ${VITE_SOCKET_API_END}
+        VITE_MAX_MESSAGES_PER_CAMPAIGN: ${VITE_MAX_MESSAGES_PER_CAMPAIGN}
+        VITE_PRODUCTION_URL: ${VITE_PRODUCTION_URL}
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+    networks:
+      - app_net
+
+networks:
+  app_net:
+    driver: bridge
