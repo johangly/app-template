@@ -97,7 +97,12 @@ export default function useUser() {
 
     const openCreateModal = () => {
         setIdEditingUser(null);
-        setForm(dataUserEmptyState);
+        setForm({
+            ...dataUserEmptyState,
+            roleId: allRoles.length > 0
+                ? parseInt(allRoles.find((r) => r.name === 'User')?.id || allRoles[0].id)
+                : 0,
+        });
         setPassword('');
         setError('');
         setShowUserModal(true);

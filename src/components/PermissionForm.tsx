@@ -73,7 +73,7 @@ export default function PermissionForm({
                         value={form.action}
                         onValueChange={(val) => handleChange({ target: { name: 'action', value: val } } as React.ChangeEvent<HTMLSelectElement>)}
                     >
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 h-auto">
                             <SelectValue placeholder="Seleccionar" />
                         </SelectTrigger>
                         <SelectContent>

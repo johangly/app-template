@@ -57,13 +57,13 @@ export default function UserForm({
         <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rol</label>
-                <Select
-                    value={form.roleId.toString()}
-                    onValueChange={(val) => handleChange({ target: { name: 'roleId', value: val } } as React.ChangeEvent<HTMLSelectElement>)}
-                >
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Seleccione un rol" />
-                    </SelectTrigger>
+                    <Select
+                        value={form.roleId.toString()}
+                        onValueChange={(val) => handleChange({ target: { name: 'roleId', value: val } } as React.ChangeEvent<HTMLSelectElement>)}
+                    >
+                        <SelectTrigger className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 h-auto">
+                            <SelectValue placeholder="Seleccione un rol" />
+                        </SelectTrigger>
                     <SelectContent>
                         {roleOptions.map((option) => (
                             <SelectItem key={option.id} value={option.id}>

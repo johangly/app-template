@@ -31,7 +31,7 @@ export default function AuditLogsPage() {
             const resources = new Set<string>();
             const actions = new Set<string>();
             for (const log of result.data) {
-                resources.add(log.resource);
+                resources.add(log.resource.split('?')[0]);
                 actions.add(log.action);
             }
             setAllUniqueResources(prev => {
@@ -76,11 +76,12 @@ export default function AuditLogsPage() {
     };
 
     const labelFor = (val: string) => {
+        const clean = val.split('?')[0];
         const map: Record<string, string> = {
             'audit-logs': 'Auditoría',
             'audit-config': 'Conf. Audit.',
         };
-        return map[val] || val;
+        return map[clean] || clean;
     };
 
     return (
