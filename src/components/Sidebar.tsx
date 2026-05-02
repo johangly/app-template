@@ -244,43 +244,32 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Header with Logo */}
       <div
         className={twMerge(
-          "border-b dark:border-gray-700 border-gray-200 h-[64.8px] flex items-center justify-center",
+          "border-b dark:border-gray-700 border-gray-200 h-[64.8px] flex items-center justify-center overflow-hidden",
           isCollapsed ? "px-2 py-3" : "py-2"
         )}
       >
-        <div className="flex items-center justify-center gap-x-8">
+        <div className="flex items-center justify-center w-full">
           <AnimatePresence mode="wait">
-            <>
-              <motion.div
-                className={twMerge(
-                  "flex flex-col justifty-center transition-all items-center w-full animate-slideInLeft text-center",
-                  isCollapsed && "animate-slideOutLeft"
-                )}
-              >
-                <div className="flex items-center justify-center px-10">
-                  {/* <img src={logoLight} alt="logo" className="block dark:hidden" />
-                  <img src={logoDark} alt="logo" className="hidden dark:block" /> */}
-                  <span className="text-xl font-bold text-gray-900 dark:text-white">YourApp</span>
-                </div>
-              </motion.div>
-            </>
-          </AnimatePresence>
-
-          {isCollapsed && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2, delay: 0.5 }}
-              className="mx-auto transition-all"
+              key={isCollapsed ? "collapsed" : "expanded"}
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 12 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className={twMerge(
+                "flex items-center justify-center text-center w-full",
+                isCollapsed ? "px-1" : "px-10"
+              )}
             >
-              <div className="flex items-center justify-center px-1">
-                {/* <img src={logoLightMini} alt="logo" className="block dark:hidden" />
-                <img src={logoDarkMini} alt="logo" className="hidden dark:block" /> */}
-                <span className="text-xl font-bold text-gray-900 dark:text-white">YA</span>
-              </div>
+              {/* <img src={logoLight} alt="logo" className="block dark:hidden" />
+              <img src={logoDark} alt="logo" className="hidden dark:block" /> */}
+              {/* <img src={logoLightMini} alt="logo" className="block dark:hidden" />
+              <img src={logoDarkMini} alt="logo" className="hidden dark:block" /> */}
+              <span className="text-xl font-bold text-gray-900 dark:text-white">
+                {isCollapsed ? "YA" : "YourApp"}
+              </span>
             </motion.div>
-          )}
+          </AnimatePresence>
         </div>
       </div>
 

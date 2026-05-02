@@ -15,5 +15,11 @@ export interface LoginGetResponse{
         createdAt: string;
         updatedAt: string;
         lastLogin: string | null;
+        permissions: {
+            id: string;
+            name: string;
+            resource: string;
+            action: string;
+        }[];
     }
 }

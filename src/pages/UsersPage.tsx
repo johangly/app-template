@@ -1,12 +1,29 @@
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { twMerge } from 'tailwind-merge';
-import { CheckCircle, Mail, Plus, Search, User, Edit } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { CheckCircle, Mail, Plus, Search, User, Edit, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import useUser from '../hooks/useUser';
+import UserForm from '../components/UserForm';
+import Modal from '../components/Modal';
+import { ConfirmDialog } from '../components/ConfirmDialog';
 
 export default function UsersPage() {
-    const navigate = useNavigate();
-    const { allUsers, setIdEditingUser, fetchUserById } = useUser();
+    const {
+        allUsers,
+        openCreateModal,
+        openEditModal,
+        closeModal,
+        showUserModal,
+        form,
+        handleChange,
+        handleSubmit,
+        loading,
+        error,
+        idEditingUser,
+        roleOptions,
+        handleDelete,
+    } = useUser();
+    const [userToDelete, setUserToDelete] = useState<{ id: number; name: string } | null>(null);
 
     return (
         <div className={twMerge("w-full flex justify-center items-start gap-5")}>
@@ -29,7 +46,7 @@ export default function UsersPage() {
                     >
                         <button
                             className="bg-blue-600 text-white px-4 py-2 rounded-md flex gap-2 items-center hover:bg-blue-700 transition-colors"
-                            onClick={() => navigate('/register-user-admin')}
+                            onClick={openCreateModal}
                         >
                             <Plus className="w-4 h-4" />
                             Agregar Usuario
@@ -96,17 +113,23 @@ export default function UsersPage() {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <button
-                                                    className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-700 transition-colors flex items-center gap-1"
-                                                    onClick={() => {
-                                                        setIdEditingUser(user.id.toString());
-                                                        navigate('/edit-user/' + user.id);
-                                                        fetchUserById();
-                                                    }}
-                                                >
-                                                    <Edit className="w-3 h-3" />
-                                                    Editar
-                                                </button>
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-700 transition-colors flex items-center gap-1"
+                                                        onClick={() => openEditModal(user)}
+                                                    >
+                                                        <Edit className="w-3 h-3" />
+                                                        Editar
+                                                    </button>
+                                                    <button
+                                                        className="bg-red-600 text-white px-3 py-1 rounded-md text-sm hover:bg-red-700 transition-colors flex items-center gap-1 disabled:opacity-60"
+                                                        onClick={() => setUserToDelete({ id: parseInt(user.id), name: user.name })}
+                                                        disabled={user.id === '1'}
+                                                    >
+                                                        <Trash2 className="w-3 h-3" />
+                                                        Eliminar
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -131,6 +154,39 @@ export default function UsersPage() {
                         </motion.div>
                     )}
                 </motion.div>
+
+                <AnimatePresence>
+                    {showUserModal && (
+                        <Modal title={idEditingUser ? 'Editar Usuario' : 'Crear Usuario'} setModal={closeModal}>
+                            <UserForm
+                                setModal={closeModal}
+                                form={form}
+                                handleChange={handleChange}
+                                handleSubmit={handleSubmit}
+                                loading={loading}
+                                error={error}
+                                idEditingUser={idEditingUser}
+                                roleOptions={roleOptions}
+                                password=""
+                            />
+                        </Modal>
+                    )}
+                </AnimatePresence>
+
+                {userToDelete && (
+                    <ConfirmDialog
+                        isOpen={!!userToDelete}
+                        onClose={() => setUserToDelete(null)}
+                        onConfirm={() => {
+                            handleDelete(userToDelete.id);
+                            setUserToDelete(null);
+                        }}
+                        title="Eliminar Usuario"
+                        message={`¿Estás seguro de eliminar al usuario "${userToDelete.name}"? Esta acción no se puede deshacer.`}
+                        confirmButtonText="Eliminar"
+                        isLoading={loading}
+                    />
+                )}
             </div>
         </div>
     );

@@ -23,6 +23,11 @@ class UserService {
   async getAllRoles(): Promise<RoleGetResponse[]> {
     return request<RoleGetResponse[]>("/roles");
   }
+  async deleteUser(id: number): Promise<{ message: string }> {
+    return request<{ message: string }>(`/users/delete-user/${id}`, {
+      method: "DELETE",
+    });
+  }
 }
 
 export const usersService = new UserService();

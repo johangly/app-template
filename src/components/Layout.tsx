@@ -5,9 +5,6 @@ import {
   Sun,
   Menu,
   X,
-  Users,
-  User2,
-  Home,
 } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { Toaster } from "react-hot-toast";
@@ -15,7 +12,7 @@ import type { MenuItem } from "../types";
 import Sidebar from "./Sidebar";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import useUser from "../hooks/useUser";
+import useMenuItems from "../hooks/useMenuItems";
 
 export const Layout = () => {
   const { isDark, toggleTheme } = useTheme();
@@ -30,11 +27,7 @@ export const Layout = () => {
   });
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isSmUp, setIsSmUp] = useState(true);
-  const { roleOptions } = useUser();
   const { user } = useAuth();
-  const userGroupId = roleOptions.find(
-    (role) => role.id === user?.roleId
-  )?.name;
 
   useEffect(() => {
     try {
@@ -56,50 +49,13 @@ export const Layout = () => {
     setMobileSidebarOpen(false);
   }, [location.pathname]);
 
-  const menuItems = useMemo((): MenuItem[] => {
-    const baseItems: MenuItem[] = [
-      {
-        id: "home",
-        label: "Inicio",
-        icon: Home,
-        path: "/home",
-      },
-    ];
+  const prettify = (segment: string) => {
+    const spaced = segment.replace(/[-_]+/g, " ").trim();
+    if (!spaced) return segment;
+    return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+  };
 
-    switch (userGroupId) {
-      case "Guest":
-        return baseItems;
-      case "User":
-        return [
-          ...baseItems,
-        ];
-      case "Admin":
-        return [
-          ...baseItems,
-          {
-            id: "administracion",
-            label: "Administración",
-            icon: User2,
-            subItems: [
-              {
-                id: "usuarios",
-                label: "Usuarios",
-                icon: Users,
-                path: "/users",
-              },
-              {
-                id: "roles",
-                label: "Roles",
-                icon: User2,
-                path: "/roles",
-              },
-            ],
-          },
-        ];
-      default:
-        return [];
-    }
-  }, [userGroupId]);
+  const menuItems = useMenuItems();
 
   const breadcrumbs = useMemo(() => {
     const pathname = location.pathname;
@@ -166,11 +122,7 @@ export const Layout = () => {
     return crumbs;
   }, [location.pathname, menuItems]);
 
-  const prettify = (segment: string) => {
-    const spaced = segment.replace(/[-_]+/g, " ").trim();
-    if (!spaced) return segment;
-    return spaced.charAt(0).toUpperCase() + spaced.slice(1);
-  };
+
 
   const handleSidebarToggle = () => {
     setSidebarCollapsed((prev) => !prev);

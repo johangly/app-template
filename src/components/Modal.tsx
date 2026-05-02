@@ -7,9 +7,8 @@ interface ModalProps {
   setModal: Dispatch<SetStateAction<boolean>>;
   children: ReactNode;
   title: string;
-  /** Si true aplica un desenfoque al backdrop (fondo). Por defecto true */
   backdropBlur?: boolean;
-	className?: string;
+  className?: string;
 }
 
 export default function Modal({
@@ -17,13 +16,13 @@ export default function Modal({
   children,
   title,
   backdropBlur = true,
-	className,
+  className,
 }: ModalProps) {
-	const shouldCloseOnClickRef = useRef(false);
+  const shouldCloseOnClickRef = useRef(false);
 
-	const containerClassName =
-		"bg-white dark:bg-gray-800 rounded-sm shadow-lg " +
-		(className ?? "p-6 min-w-lg min-h-96 max-w-lg w-full");
+  const containerClassName =
+    "bg-white dark:bg-gray-800 rounded-sm shadow-lg " +
+    (className ?? "p-6 min-w-lg min-h-96 max-w-lg w-full");
 
   return (
     <motion.div
@@ -33,16 +32,16 @@ export default function Modal({
       className={`fixed inset-0 bg-black/50 bg-opacity-30 flex justify-center items-center z-50 ${
         backdropBlur ? "backdrop-blur-sm" : ""
       }`}
-		onMouseDown={(e) => {
-			shouldCloseOnClickRef.current = e.target === e.currentTarget;
-		}}
-		onClick={(e) => {
-			const clickedBackdrop = e.target === e.currentTarget;
-			if (clickedBackdrop && shouldCloseOnClickRef.current) {
-				setModal(false);
-			}
-			shouldCloseOnClickRef.current = false;
-		}}
+      onMouseDown={(e) => {
+        shouldCloseOnClickRef.current = e.target === e.currentTarget;
+      }}
+      onClick={(e) => {
+        const clickedBackdrop = e.target === e.currentTarget;
+        if (clickedBackdrop && shouldCloseOnClickRef.current) {
+          setModal(false);
+        }
+        shouldCloseOnClickRef.current = false;
+      }}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}

@@ -12,8 +12,8 @@ import { ReactNode } from "react";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./hooks/useAuth";
 import UsersPage from "./pages/UsersPage";
-import UserForm from "./components/UserForm";
 import RolesPage from "./pages/RolesPage";
+import PermissionsPage from "./pages/PermissionsPage";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { motion } from 'framer-motion';
 
@@ -55,19 +55,8 @@ function App() {
               <Route path="/home" element={<HomePage />} />
               <Route path="/users" element={<UsersPage />} />
               <Route path="/roles" element={<RolesPage />} />
+              <Route path="/permissions" element={<PermissionsPage />} />
             </Route>
-            <Route
-              path="register-user-admin"
-              element={<UserForm showSelectRole={true} />}
-            />
-            <Route
-              path="edit-user/:id"
-              element={<UserForm showSelectRole={true} />}
-            />
-            <Route
-              path="register-user"
-              element={<UserForm showSelectRole={false} />}
-            />
           </Routes>
         </Router>
       </ThemeProvider>

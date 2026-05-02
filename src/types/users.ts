@@ -3,6 +3,7 @@ export interface UserPost{
     email: string;
     roleId: number;
     password: string;
+    isActive?: boolean;
 }
 export interface UserGetResponse{
     id: string;
@@ -27,4 +28,20 @@ export interface RoleGetResponse{
     isActive: boolean;
     createdAt: string;
     updatedAt: string;
+    permissions?: PermissionGetResponse[];
+}
+export interface PermissionGetResponse{
+    id: string;
+    name: string;
+    description: string;
+    resource: string;
+    action: string;
+    createdAt: string;
+    updatedAt: string;
+}
+export interface PermissionPost{
+    name: string;
+    description: string;
+    resource: string;
+    action: string;
 }
