@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Home, Users, Shield, Key, type LucideIcon } from 'lucide-react';
+import { Home, Users, Shield, Key, History, Settings, type LucideIcon } from 'lucide-react';
 import { useAuth } from './useAuth';
 import type { MenuItem } from '../types';
 
@@ -7,6 +7,8 @@ const resourceConfig: Record<string, { label: string; icon: LucideIcon; path: st
     users: { label: 'Usuarios', icon: Users, path: '/users', parent: 'admin' },
     roles: { label: 'Roles', icon: Shield, path: '/roles', parent: 'admin' },
     permissions: { label: 'Permisos', icon: Key, path: '/permissions', parent: 'admin' },
+    'audit-logs': { label: 'Auditoría', icon: History, path: '/audit-logs', parent: 'admin' },
+    'audit-config': { label: 'Config. Auditoría', icon: Settings, path: '/audit-config', parent: 'admin' },
 };
 
 export default function useMenuItems(): MenuItem[] {

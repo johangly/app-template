@@ -14,6 +14,8 @@ import { useAuth } from "./hooks/useAuth";
 import UsersPage from "./pages/UsersPage";
 import RolesPage from "./pages/RolesPage";
 import PermissionsPage from "./pages/PermissionsPage";
+import AuditLogsPage from "./pages/AuditLogsPage";
+import AuditConfigPage from "./pages/AuditConfigPage";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { motion } from 'framer-motion';
 
@@ -56,6 +58,8 @@ function App() {
               <Route path="/users" element={<UsersPage />} />
               <Route path="/roles" element={<RolesPage />} />
               <Route path="/permissions" element={<PermissionsPage />} />
+              <Route path="/audit-logs" element={<AuditLogsPage />} />
+              <Route path="/audit-config" element={<AuditConfigPage />} />
             </Route>
           </Routes>
         </Router>
