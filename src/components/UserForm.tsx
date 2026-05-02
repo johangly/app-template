@@ -1,3 +1,5 @@
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+
 interface UserFormProps {
     setModal: (value: boolean) => void;
     form: { name: string; email: string; roleId: number; password: string; confirmPassword: string; isActive: boolean };
@@ -36,13 +38,6 @@ export default function UserForm({
             placeholder: 'ejemplo@correo.com',
         },
         {
-            label: 'Rol',
-            type: 'select',
-            name: 'roleId',
-            value: form.roleId,
-            options: roleOptions,
-        },
-        {
             label: 'Contraseña',
             type: 'password',
             name: 'password',
@@ -60,39 +55,40 @@ export default function UserForm({
 
     return (
         <form className="space-y-4" onSubmit={handleSubmit}>
+            <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rol</label>
+                <Select
+                    value={form.roleId.toString()}
+                    onValueChange={(val) => handleChange({ target: { name: 'roleId', value: val } } as React.ChangeEvent<HTMLSelectElement>)}
+                >
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Seleccione un rol" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {roleOptions.map((option) => (
+                            <SelectItem key={option.id} value={option.id}>
+                                {option.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+
             {inputs.map((input, idx) => (
                 <div key={idx}>
                     <label htmlFor={input.name} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         {input.label}
                     </label>
-                    {input.type === 'select' ? (
-                        <select
-                            id={input.name}
-                            name={input.name}
-                            value={input.value}
-                            onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        >
-                            <option value="" disabled>Seleccione un rol</option>
-                            {input.options?.map((option) => (
-                                <option key={option.id} value={parseInt(option.id)}>
-                                    {option.name}
-                                </option>
-                            ))}
-                        </select>
-                    ) : (
-                        <input
-                            id={input.name}
-                            type={input.type}
-                            name={input.name}
-                            value={input.value}
-                            onChange={handleChange}
-                            placeholder={input.placeholder}
-                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required={!idEditingUser && input.type === 'password'}
-                        />
-                    )}
+                    <input
+                        id={input.name}
+                        type={input.type}
+                        name={input.name}
+                        value={input.value}
+                        onChange={handleChange}
+                        placeholder={input.placeholder}
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required={!idEditingUser && input.type === 'password'}
+                    />
                 </div>
             ))}
 

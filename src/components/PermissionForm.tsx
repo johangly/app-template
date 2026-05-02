@@ -1,7 +1,9 @@
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+
 interface PermissionFormProps {
     setModal: (value: boolean) => void;
     form: { name: string; description: string; resource: string; action: string };
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     handleSubmit: (e: React.FormEvent) => void;
     loading: boolean;
     error: string;
@@ -66,23 +68,21 @@ export default function PermissionForm({
                     />
                 </div>
                 <div>
-                    <label htmlFor="action" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Action
-                    </label>
-                    <select
-                        id="action"
-                        name="action"
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Action</label>
+                    <Select
                         value={form.action}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
+                        onValueChange={(val) => handleChange({ target: { name: 'action', value: val } } as React.ChangeEvent<HTMLSelectElement>)}
                     >
-                        <option value="" disabled>Seleccionar</option>
-                        <option value="create">create</option>
-                        <option value="read">read</option>
-                        <option value="update">update</option>
-                        <option value="delete">delete</option>
-                    </select>
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Seleccionar" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="create">create</SelectItem>
+                            <SelectItem value="read">read</SelectItem>
+                            <SelectItem value="update">update</SelectItem>
+                            <SelectItem value="delete">delete</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
             {error && <div className="text-red-500 text-sm">{error}</div>}

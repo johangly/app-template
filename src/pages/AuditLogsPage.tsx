@@ -4,6 +4,7 @@ import { twMerge } from 'tailwind-merge';
 import { Search, History, User, Calendar, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import { auditService, AuditLogResponse } from '../services/auditService';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 
 export default function AuditLogsPage() {
     const [logs, setLogs] = useState<AuditLogResponse[]>([]);
@@ -14,6 +15,8 @@ export default function AuditLogsPage() {
     const [filters, setFilters] = useState<{ resource?: string; action?: string; search?: string }>({});
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [showCleanup, setShowCleanup] = useState(false);
+    const [allUniqueResources, setAllUniqueResources] = useState<string[]>([]);
+    const [allUniqueActions, setAllUniqueActions] = useState<string[]>([]);
 
     const limit = 50;
 
@@ -24,6 +27,21 @@ export default function AuditLogsPage() {
             setLogs(result.data);
             setTotal(result.total);
             setTotalPages(result.totalPages);
+
+            const resources = new Set<string>();
+            const actions = new Set<string>();
+            for (const log of result.data) {
+                resources.add(log.resource);
+                actions.add(log.action);
+            }
+            setAllUniqueResources(prev => {
+                const merged = new Set([...prev, ...resources]);
+                return [...merged].sort();
+            });
+            setAllUniqueActions(prev => {
+                const merged = new Set([...prev, ...actions]);
+                return [...merged].sort();
+            });
         } catch {
             // ignore
         } finally {
@@ -37,7 +55,7 @@ export default function AuditLogsPage() {
 
     const handleCleanup = async () => {
         try {
-            await auditService.cleanupLogs(90);
+            const result = await auditService.cleanupLogs(90);
             setShowCleanup(false);
             fetchLogs();
         } catch {
@@ -57,12 +75,17 @@ export default function AuditLogsPage() {
         return map[action] || 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
     };
 
-    const uniqueResources = [...new Set(logs.map((l) => l.resource))];
-    const uniqueActions = [...new Set(logs.map((l) => l.action))];
+    const labelFor = (val: string) => {
+        const map: Record<string, string> = {
+            'audit-logs': 'Auditoría',
+            'audit-config': 'Conf. Audit.',
+        };
+        return map[val] || val;
+    };
 
     return (
         <div className={twMerge("w-full flex justify-center items-start gap-5")}>
-            <div className="max-w-6xl w-full space-y-6">
+            <div className="max-w-full w-full space-y-6">
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
@@ -87,25 +110,37 @@ export default function AuditLogsPage() {
                     <div className="flex flex-wrap gap-3 items-end">
                         <div>
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Recurso</label>
-                            <select
-                                value={filters.resource || ''}
-                                onChange={(e) => { setFilters((f) => ({ ...f, resource: e.target.value || undefined })); setPage(1); }}
-                                className="px-3 py-1.5 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            <Select
+                                value={filters.resource || 'all'}
+                                onValueChange={(val) => { setFilters((f) => ({ ...f, resource: val === 'all' ? undefined : val })); setPage(1); }}
                             >
-                                <option value="">Todos</option>
-                                {uniqueResources.map((r) => <option key={r} value={r}>{r}</option>)}
-                            </select>
+                                <SelectTrigger className="w-40">
+                                    <SelectValue placeholder="Todos" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Todos</SelectItem>
+                                    {allUniqueResources.map((r) => (
+                                        <SelectItem key={r} value={r}>{labelFor(r)}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div>
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Acción</label>
-                            <select
-                                value={filters.action || ''}
-                                onChange={(e) => { setFilters((f) => ({ ...f, action: e.target.value || undefined })); setPage(1); }}
-                                className="px-3 py-1.5 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            <Select
+                                value={filters.action || 'all'}
+                                onValueChange={(val) => { setFilters((f) => ({ ...f, action: val === 'all' ? undefined : val })); setPage(1); }}
                             >
-                                <option value="">Todas</option>
-                                {uniqueActions.map((a) => <option key={a} value={a}>{a}</option>)}
-                            </select>
+                                <SelectTrigger className="w-36">
+                                    <SelectValue placeholder="Todas" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Todas</SelectItem>
+                                    {allUniqueActions.map((a) => (
+                                        <SelectItem key={a} value={a}>{a}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div>
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Buscar</label>
@@ -157,7 +192,7 @@ export default function AuditLogsPage() {
                                                 </td>
                                                 <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                                                     <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 px-1.5 py-0.5 rounded text-xs font-mono">
-                                                        {log.resource}
+                                                        {labelFor(log.resource)}
                                                     </span>
                                                 </td>
                                                 <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 max-w-xs truncate">
