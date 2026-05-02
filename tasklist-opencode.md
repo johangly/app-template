@@ -101,3 +101,12 @@ Autenticación JWT, RBAC dinámico con permisos, menú dinámico basado en permi
 | `/app/GUIA_AGREGAR_SECCION.md` | Cómo agregar nuevas secciones |
 | `/app/DOC_AUDITORIA.md` | Documentación del sistema de auditoría |
 | `/app/tasklist-opencode.md` | Este archivo |
+
+
+## pendiente:
+
+por cierto ya que estás agregando más cosas de SID y cosas relacionadas a eso ten en cuenta que todo esto debe estar por defecto cuando se inicia el sistema inicialmente o sea tienes que hacer que haya en la documentación la guía para hacer esto nuevo que estás agregando creo que en el README.md tienes una guía de instalación donde ejecutas los SID de roles y de usuarios bueno ahí también tienes que agregar los pasos para que esto nuevo de auditoría también funcione
+
+revisar si se arreglo:
+
+Bueno, estoy haciendo las revisiones y en el crear usuario, por defecto cuando vas a crear un usuario, primero no se ve nada, no se ve nada en el role, el role por defecto no tiene nada seleccionado, debería tener algo seleccionado, aunque no se ve y si le doy a user, por ejemplo, o a guest, no aparece nada tampoco en el input que está acá. Lo demás está bien. En cuanto a por menos permisos, veo que en el action de nuevo permiso, sí aparece el texto y hay algo seleccionado ya, sin embargo, el ancho, la altura en el eje Y, la altura del input select no se parece a la de los demás, ajustala para que se parezca a los demás. Si quieres edita y personaliza el componente de Shazam para mejorar esto, las dos cosas que te menciono, tanto en usuarios como en nuevo permiso.

@@ -35,7 +35,7 @@ export default function AuditLogsPage() {
                 actions.add(log.action);
             }
             setAllUniqueResources(prev => {
-                const merged = new Set([...prev, ...resources]);
+                const merged = new Set([...prev.map((r) => r.split('?')[0]), ...resources]);
                 return [...merged].sort();
             });
             setAllUniqueActions(prev => {
