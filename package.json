@@ -13,7 +13,9 @@
     "test:coverage": "jest --coverage",
     "test:components": "jest --testPathPattern=components",
     "test:hooks": "jest --testPathPattern=hooks",
-    "test:contexts": "jest --testPathPattern=contexts"
+    "test:contexts": "jest --testPathPattern=contexts",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.3.3",
@@ -62,6 +64,18 @@
     "tw-animate-css": "^1.3.6",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
-    "vite": "^8.0.10"
+    "vite": "^8.0.10",
+    "storybook": "^10.3.6",
+    "@storybook/react-vite": "^10.3.6",
+    "@chromatic-com/storybook": "^5.1.2",
+    "@storybook/addon-vitest": "^10.3.6",
+    "@storybook/addon-a11y": "^10.3.6",
+    "@storybook/addon-docs": "^10.3.6",
+    "@storybook/addon-onboarding": "^10.3.6",
+    "eslint-plugin-storybook": "^10.3.6",
+    "vitest": "^4.1.5",
+    "playwright": "^1.59.1",
+    "@vitest/browser-playwright": "^4.1.5",
+    "@vitest/coverage-v8": "^4.1.5"
   }
 }
