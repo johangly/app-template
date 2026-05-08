@@ -21,6 +21,7 @@ import AuditConfigPage from "./pages/AuditConfigPage";
 import SettingsPage from "./pages/SettingsPage";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { motion } from 'framer-motion';
+import { QueryProvider } from "./providers/QueryProvider";
 
 function PrivateRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, loading } = useAuth();
@@ -44,33 +45,35 @@ function PrivateRoute({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <Router>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route
-              element={
-                <PrivateRoute>
-                  <Layout />
-                </PrivateRoute>
-              }
-            >
-              <Route path="/" element={<Navigate to="/home" replace />} />
-              <Route path="/home" element={<HomePage />} />
-              <Route path="/users" element={<UsersPage />} />
-              <Route path="/roles" element={<RolesPage />} />
-              <Route path="/permissions" element={<PermissionsPage />} />
-              <Route path="/audit-logs" element={<AuditLogsPage />} />
-              <Route path="/audit-config" element={<AuditConfigPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-            </Route>
-          </Routes>
-        </Router>
-      </ThemeProvider>
-    </AuthProvider>
+    <QueryProvider>
+      <AuthProvider>
+        <ThemeProvider>
+          <Router>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route
+                element={
+                  <PrivateRoute>
+                    <Layout />
+                  </PrivateRoute>
+                }
+              >
+                <Route path="/" element={<Navigate to="/home" replace />} />
+                <Route path="/home" element={<HomePage />} />
+                <Route path="/users" element={<UsersPage />} />
+                <Route path="/roles" element={<RolesPage />} />
+                <Route path="/permissions" element={<PermissionsPage />} />
+                <Route path="/audit-logs" element={<AuditLogsPage />} />
+                <Route path="/audit-config" element={<AuditConfigPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+              </Route>
+            </Routes>
+          </Router>
+        </ThemeProvider>
+      </AuthProvider>
+    </QueryProvider>
   );
 }
 
