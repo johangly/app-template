@@ -7,7 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:components": "jest --testPathPattern=components",
+    "test:hooks": "jest --testPathPattern=hooks",
+    "test:contexts": "jest --testPathPattern=contexts"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.3.3",
@@ -36,6 +42,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.2.1",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
@@ -44,6 +54,11 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.11",
     "globals": "^15.9.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^30.4.1",
+    "jest-environment-jsdom": "^30.4.1",
+    "msw": "^2.14.5",
+    "ts-jest": "^29.4.9",
     "tw-animate-css": "^1.3.6",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
