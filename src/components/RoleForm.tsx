@@ -1,4 +1,6 @@
 import { Key } from 'lucide-react';
+import FormField from './FormField';
+import FormTextArea from './FormTextArea';
 
 interface RoleFormProps {
     setModal: (value: boolean) => void;
@@ -29,36 +31,26 @@ export default function RoleForm({
 }: RoleFormProps) {
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Nombre
-                </label>
-                <input
-                    id="name"
-                    type="text"
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="Nombre del rol"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                />
-            </div>
-            <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Descripción
-                </label>
-                <textarea
-                    id="description"
-                    name="description"
-                    value={form.description}
-                    onChange={handleChange}
-                    placeholder="Descripción del rol"
-                    rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                    required
-                />
-            </div>
+            <FormField
+                id="name"
+                label="Nombre"
+                type="text"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Nombre del rol"
+                required
+            />
+            <FormTextArea
+                id="description"
+                label="Descripción"
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                placeholder="Descripción del rol"
+                rows={3}
+                required
+            />
 
             <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
                 <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
@@ -99,7 +91,7 @@ export default function RoleForm({
             <div className="flex gap-2 pt-2">
                 <button
                     type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-60"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60 h-10"
                     disabled={loading}
                 >
                     {loading ? 'Guardando...' : idEditingRole ? 'Actualizar' : 'Crear'}
@@ -108,7 +100,7 @@ export default function RoleForm({
                     <button
                         type="button"
                         onClick={saveRolePermissions}
-                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors disabled:opacity-60"
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-60 h-10"
                         disabled={loading}
                     >
                         {loading ? 'Guardando...' : 'Solo Permisos'}

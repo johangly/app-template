@@ -8,6 +8,8 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { Layout } from "./components/Layout";
 import { HomePage } from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { ReactNode } from "react";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./hooks/useAuth";
@@ -16,6 +18,7 @@ import RolesPage from "./pages/RolesPage";
 import PermissionsPage from "./pages/PermissionsPage";
 import AuditLogsPage from "./pages/AuditLogsPage";
 import AuditConfigPage from "./pages/AuditConfigPage";
+import SettingsPage from "./pages/SettingsPage";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { motion } from 'framer-motion';
 
@@ -46,6 +49,8 @@ function App() {
         <Router>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route
               element={
                 <PrivateRoute>
@@ -60,6 +65,7 @@ function App() {
               <Route path="/permissions" element={<PermissionsPage />} />
               <Route path="/audit-logs" element={<AuditLogsPage />} />
               <Route path="/audit-config" element={<AuditConfigPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
             </Route>
           </Routes>
         </Router>

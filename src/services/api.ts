@@ -1,5 +1,17 @@
 import { API_BASE_URL } from "./apiConfig";
 
+export class ApiError extends Error {
+  status: number;
+  data: any;
+
+  constructor(message: string, status: number, data?: any) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.data = data;
+  }
+}
+
 export const request = async <T>(
   endpoint: string,
   options?: RequestInit,
@@ -54,8 +66,10 @@ export const request = async <T>(
     const errorData = await response
       .json()
       .catch(() => ({ message: response.statusText }));
-    throw new Error(
-      `HTTP error! status: ${response.status}, message: ${errorData.message}`
+    throw new ApiError(
+      errorData.message || `HTTP error! status: ${response.status}`,
+      response.status,
+      errorData
     );
   }
 

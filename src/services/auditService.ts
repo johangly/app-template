@@ -72,6 +72,10 @@ class AuditService {
             body: JSON.stringify({ configs }),
         });
     }
+
+    async getFilters(): Promise<{ resources: string[]; actions: string[] }> {
+        return request<{ resources: string[]; actions: string[] }>("/audit-logs/filters");
+    }
 }
 
 export const auditService = new AuditService();

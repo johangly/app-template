@@ -1,4 +1,5 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import FormField from './FormField';
+import FormSelect from './FormSelect';
 
 interface UserFormProps {
     setModal: (value: boolean) => void;
@@ -22,74 +23,35 @@ export default function UserForm({
     idEditingUser,
     roleOptions,
 }: UserFormProps) {
-    const inputs = [
-        {
-            label: 'Nombre completo',
-            type: 'text',
-            name: 'name',
-            value: form.name,
-            placeholder: 'Tu nombre',
-        },
-        {
-            label: 'Correo electrónico',
-            type: 'email',
-            name: 'email',
-            value: form.email,
-            placeholder: 'ejemplo@correo.com',
-        },
-        {
-            label: 'Contraseña',
-            type: 'password',
-            name: 'password',
-            value: form.password,
-            placeholder: idEditingUser ? '•••••••• (dejar vacío para mantener)' : '••••••••',
-        },
-        {
-            label: 'Confirmar contraseña',
-            type: 'password',
-            name: 'confirmPassword',
-            value: form.confirmPassword,
-            placeholder: '••••••••',
-        },
+    const fields = [
+        { label: 'Nombre completo', type: 'text' as const, name: 'name', placeholder: 'Tu nombre' },
+        { label: 'Correo electrónico', type: 'email' as const, name: 'email', placeholder: 'ejemplo@correo.com' },
+        { label: 'Contraseña', type: 'password' as const, name: 'password', placeholder: idEditingUser ? '•••••••• (dejar vacío para mantener)' : '••••••••' },
+        { label: 'Confirmar contraseña', type: 'password' as const, name: 'confirmPassword', placeholder: '••••••••' },
     ];
 
     return (
         <form className="space-y-4" onSubmit={handleSubmit}>
-            <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rol</label>
-                    <Select
-                        value={form.roleId.toString()}
-                        onValueChange={(val) => handleChange({ target: { name: 'roleId', value: val } } as React.ChangeEvent<HTMLSelectElement>)}
-                    >
-                        <SelectTrigger className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 h-auto">
-                            <SelectValue placeholder="Seleccione un rol" />
-                        </SelectTrigger>
-                    <SelectContent>
-                        {roleOptions.map((option) => (
-                            <SelectItem key={option.id} value={option.id}>
-                                {option.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
+            <FormSelect
+                label="Rol"
+                value={form.roleId ? form.roleId.toString() : ''}
+                onValueChange={(val) => handleChange({ target: { name: 'roleId', value: val } } as React.ChangeEvent<HTMLSelectElement>)}
+                options={roleOptions.map(r => ({ value: r.id, label: r.name }))}
+                placeholder="Seleccione un rol"
+            />
 
-            {inputs.map((input, idx) => (
-                <div key={idx}>
-                    <label htmlFor={input.name} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        {input.label}
-                    </label>
-                    <input
-                        id={input.name}
-                        type={input.type}
-                        name={input.name}
-                        value={input.value}
-                        onChange={handleChange}
-                        placeholder={input.placeholder}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required={!idEditingUser && input.type === 'password'}
-                    />
-                </div>
+            {fields.map((field) => (
+                <FormField
+                    key={field.name}
+                    id={field.name}
+                    label={field.label}
+                    type={field.type}
+                    name={field.name}
+                    value={form[field.name as keyof typeof form] as string}
+                    onChange={handleChange}
+                    placeholder={field.placeholder}
+                    required={!idEditingUser && field.type === 'password'}
+                />
             ))}
 
             {idEditingUser && (
@@ -111,7 +73,7 @@ export default function UserForm({
             {error && <div className="text-red-500 text-sm text-center">{error}</div>}
             <button
                 type="submit"
-                className="w-full py-2 mt-2 bg-blue-600 hover:bg-blue-700 transition-colors text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-60"
+                className="w-full py-2.5 mt-2 bg-blue-600 hover:bg-blue-700 transition-colors text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-60 h-10"
                 disabled={loading}
             >
                 {loading ? 'Guardando...' : idEditingUser ? 'Actualizar' : 'Crear'}

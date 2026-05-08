@@ -103,7 +103,9 @@ export default function PermissionsPage() {
             <div className="max-w-5xl w-full space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Permisos</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <Key className="w-6 h-6" /> Permisos
+                        </h1>
                         <p className="text-gray-600 dark:text-gray-400">Crea y gestiona los permisos del sistema</p>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>

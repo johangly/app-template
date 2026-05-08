@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
 import { Toaster } from 'react-hot-toast';
 
@@ -38,10 +38,7 @@ export default function LoginPage() {
                     loading={loading}
                 />
                 <div className="text-center mt-2">
-                    <span className="text-xs text-gray-400 dark:text-gray-500">¿Olvidaste tu contraseña?</span>
-                </div>
-                <div className="text-center mt-2">
-                    <a href="/register-user" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">Registrar usuario</a>
+                    <Link to="/forgot-password" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">¿Olvidaste tu contraseña?</Link>
                 </div>
             </div>
         </div>

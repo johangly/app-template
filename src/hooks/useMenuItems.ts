@@ -9,6 +9,7 @@ const resourceConfig: Record<string, { label: string; icon: LucideIcon; path: st
     permissions: { label: 'Permisos', icon: Key, path: '/permissions', parent: 'admin' },
     'audit-logs': { label: 'Auditoría', icon: History, path: '/audit-logs', parent: 'admin' },
     'audit-config': { label: 'Config. Auditoría', icon: Settings, path: '/audit-config', parent: 'admin' },
+    'system-config': { label: 'Configuración', icon: Settings, path: '/settings', parent: 'admin' },
 };
 
 export default function useMenuItems(): MenuItem[] {

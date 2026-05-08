@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
+import { Home } from "lucide-react";
 
 export const HomePage: React.FC = () => {
   const { user } = useAuth();
@@ -12,8 +13,8 @@ export const HomePage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Bienvenido, {user?.name}
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center justify-center gap-2">
+            <Home className="w-8 h-8" /> Bienvenido, {user?.name}
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
             Selecciona una opción del menú para comenzar

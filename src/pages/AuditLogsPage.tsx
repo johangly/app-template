@@ -20,6 +20,25 @@ export default function AuditLogsPage() {
 
     const limit = 50;
 
+    async function fetchFilters() {
+        try {
+            const result = await auditService.getFilters();
+            const knownResources = ['users', 'roles', 'permissions', 'auth', 'audit-logs', 'audit-config'];
+            const knownActions = ['login', 'logout', 'create', 'read', 'update', 'delete'];
+
+            const dbResources = (result.resources || []).map((r: string) => r.split('?')[0]);
+            const mergedResources = [...new Set([...dbResources, ...knownResources])].sort();
+            const mergedActions = [...new Set([...(result.actions || []), ...knownActions])].sort();
+
+            setAllUniqueResources(mergedResources);
+            setAllUniqueActions(mergedActions);
+        } catch (err) {
+            console.error('Error fetching audit filters:', err);
+            setAllUniqueResources(['users', 'roles', 'permissions', 'auth', 'audit-logs', 'audit-config']);
+            setAllUniqueActions(['login', 'logout', 'create', 'read', 'update', 'delete']);
+        }
+    }
+
     async function fetchLogs() {
         setLoading(true);
         try {
@@ -27,21 +46,6 @@ export default function AuditLogsPage() {
             setLogs(result.data);
             setTotal(result.total);
             setTotalPages(result.totalPages);
-
-            const resources = new Set<string>();
-            const actions = new Set<string>();
-            for (const log of result.data) {
-                resources.add(log.resource.split('?')[0]);
-                actions.add(log.action);
-            }
-            setAllUniqueResources(prev => {
-                const merged = new Set([...prev.map((r) => r.split('?')[0]), ...resources]);
-                return [...merged].sort();
-            });
-            setAllUniqueActions(prev => {
-                const merged = new Set([...prev, ...actions]);
-                return [...merged].sort();
-            });
         } catch {
             // ignore
         } finally {
@@ -50,6 +54,7 @@ export default function AuditLogsPage() {
     }
 
     useEffect(() => {
+        fetchFilters();
         fetchLogs();
     }, [page, filters]);
 
@@ -82,6 +87,18 @@ export default function AuditLogsPage() {
             'audit-config': 'Conf. Audit.',
         };
         return map[clean] || clean;
+    };
+
+    const actionLabel = (action: string) => {
+        const map: Record<string, string> = {
+            login: 'Inicio de sesión',
+            logout: 'Cierre de sesión',
+            create: 'Creación',
+            read: 'Consulta',
+            update: 'Actualización',
+            delete: 'Eliminación',
+        };
+        return map[action] || action;
     };
 
     return (
@@ -138,7 +155,7 @@ export default function AuditLogsPage() {
                                 <SelectContent>
                                     <SelectItem value="all">Todas</SelectItem>
                                     {allUniqueActions.map((a) => (
-                                        <SelectItem key={a} value={a}>{a}</SelectItem>
+                                        <SelectItem key={a} value={a}>{actionLabel(a)}</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
@@ -149,7 +166,7 @@ export default function AuditLogsPage() {
                                 value={filters.search || ''}
                                 onChange={(e) => { setFilters((f) => ({ ...f, search: e.target.value || undefined })); setPage(1); }}
                                 placeholder="Buscar en descripción..."
-                                className="px-3 py-1.5 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+                                className="h-10 px-3 rounded-lg border border-input bg-background text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-900 w-64"
                             />
                         </div>
                     </div>

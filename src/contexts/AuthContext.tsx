@@ -3,6 +3,7 @@ import { loginService } from "../services/loginService";
 import { LoginGetResponse } from "../types/auth";
 import toast from "react-hot-toast";
 import { jwtDecode } from 'jwt-decode';
+import { ApiError } from "../services/api";
 
 interface AuthContextType {
   user: LoginGetResponse["user"] | null;
@@ -47,8 +48,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
       toast.success("Inicio de sesión exitoso");
       return true;
     } catch (err) {
-      if (err instanceof Error) {
+      if (err instanceof ApiError) {
+        const message = err.message;
+        const remainingAttempts = err.data?.remainingAttempts;
+        
+        if (remainingAttempts !== undefined) {
+          toast.error(`${message}. Intentos restantes: ${remainingAttempts}`);
+        } else {
+          toast.error(message);
+        }
+        setError(message);
+      } else if (err instanceof Error) {
         setError(err.message);
+        toast.error(err.message);
       }
       return false;
     } finally {

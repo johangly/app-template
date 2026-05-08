@@ -16,6 +16,8 @@ export interface UserGetResponse{
     password: string;
     updatedAt: string;
     lastLogin: string | null;
+    loginAttempts: number;
+    lockUntil: string | null;
     userRole: {
         id: string;
         name: string;

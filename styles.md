@@ -128,14 +128,49 @@ text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors
 
 ### 4.3 Inputs
 
-**Input de texto / email / password:**
-```
-w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500
+**Componentes reutilizables (recomendado):**
+
+Para mantener consistencia, usar los componentes `FormField` y `FormSelect`:
+
+```tsx
+import FormField from './FormField';
+import FormSelect from './FormSelect';
+
+// Input de texto
+<FormField
+    id="email"
+    label="Correo electrónico"
+    type="email"
+    name="email"
+    value={form.email}
+    onChange={handleChange}
+    placeholder="ejemplo@correo.com"
+    required
+/>
+
+// Select
+<FormSelect
+    label="Rol"
+    value={form.roleId ? form.roleId.toString() : ''}
+    onValueChange={(val) => handleChange({ target: { name: 'roleId', value: val } })}
+    options={[
+        { value: '1', label: 'Admin' },
+        { value: '2', label: 'User' },
+    ]}
+    placeholder="Seleccione un rol"
+/>
 ```
 
-**Select:**
+**Estilos base (si se necesita input nativo):**
+
+Input de texto:
 ```
-w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500
+flex h-10 w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500
+```
+
+Select nativo:
+```
+flex h-10 w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 appearance-none
 ```
 
 ### 4.4 Tablas
@@ -312,12 +347,50 @@ Todas las clases deben incluir su variante `dark:` correspondiente. El tema se a
 
 ---
 
-## 10. Estructura de archivos UI
+## 10. Componentes de Formulario Reutilizables
+
+### FormField (Input + Label)
+**Ubicación:** `src/components/FormField.tsx`
+
+Props:
+- `label: string` - Texto del label
+- `error?: string` - Mensaje de error
+- Todos los props de `<input>` nativo
+
+### FormSelect (Select + Label)
+**Ubicación:** `src/components/FormSelect.tsx`
+
+Props:
+- `label: string` - Texto del label
+- `value: string` - Valor seleccionado
+- `onValueChange: (value: string) => void` - Handler de cambio
+- `options: { value: string; label: string }[]` - Opciones
+- `placeholder?: string` - Texto placeholder
+- `error?: string` - Mensaje de error
+- `disabled?: boolean` - Deshabilitado
+
+**Nota importante:** El componente maneja automáticamente la conversión de tipos (string/number) para evitar problemas de comparación.
+
+### FormTextArea (Textarea + Label)
+**Ubicación:** `src/components/FormTextArea.tsx`
+
+Props similares a FormField pero para textarea.
+
+---
+
+## 11. Estructura de archivos UI
 
 ```
 app/src/
 ├── components/          # Componentes reutilizables
 │   ├── ui/              # Primitivos (shadcn/radix)
+│   │   ├── select.tsx   # Select de shadcn (modificado)
+│   │   ├── input.tsx    # Input de shadcn
+│   │   ├── button.tsx   # Button de shadcn
+│   │   └── ...
+│   ├── FormField.tsx    # Input reutilizable
+│   ├── FormSelect.tsx   # Select reutilizable
+│   ├── FormTextArea.tsx # Textarea reutilizable
 │   ├── Modal.tsx
 │   ├── Layout.tsx
 │   └── ...
@@ -329,3 +402,15 @@ app/src/
 ├── services/            # Llamadas a API
 └── types/               # Interfaces TypeScript
 ```
+
+---
+
+## 12. Notas sobre shadcn/ui
+
+Los componentes de shadcn/ui en `src/components/ui/` han sido modificados para seguir los estilos del proyecto:
+
+- **SelectTrigger:** Usa `h-10`, `bg-gray-50 dark:bg-gray-800`, `border-gray-300 dark:border-gray-700` en lugar de los valores por defecto de shadcn
+- **SelectContent:** Fondo y bordes consistentes con el tema
+- **SelectItem:** Tamaño de texto `text-sm` y estilos de focus consistentes
+
+Cuando uses componentes de shadcn directamente, agregar clases para ancho: `className="w-40"` o `className="w-full"` según sea necesario.

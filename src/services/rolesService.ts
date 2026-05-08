@@ -1,9 +1,26 @@
 import { PermissionGetResponse, PermissionPost, RoleGetResponse } from "../types/users";
 import { request } from "./api";
 
+interface PaginatedResponse<T> {
+    data: T[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+}
+
 class RolesService {
   async getAllRoles(): Promise<RoleGetResponse[]> {
-    return request<RoleGetResponse[]>("/roles");
+    const result = await request<PaginatedResponse<RoleGetResponse>>("/roles?limit=1000");
+    return result.data;
+  }
+
+  async getPaginatedRoles(params: { page: number; limit: number; search?: string }): Promise<PaginatedResponse<RoleGetResponse>> {
+    const query = new URLSearchParams();
+    query.set("page", params.page.toString());
+    query.set("limit", params.limit.toString());
+    if (params.search) query.set("search", params.search);
+    return request<PaginatedResponse<RoleGetResponse>>(`/roles?${query.toString()}`);
   }
 
   async getRoleById(id: number): Promise<RoleGetResponse> {

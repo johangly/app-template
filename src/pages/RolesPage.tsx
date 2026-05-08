@@ -43,8 +43,8 @@ export default function RolesPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                     >
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                            Roles
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <Shield className="w-6 h-6" /> Roles
                         </h1>
                         <p className="text-gray-600 dark:text-gray-400">
                             Gestiona los roles y permisos del sistema
