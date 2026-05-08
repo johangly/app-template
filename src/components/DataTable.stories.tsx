@@ -22,10 +22,20 @@ const sampleData = [
 ];
 
 const columns = [
-  { key: 'name', header: 'Name', sortable: true },
-  { key: 'email', header: 'Email', sortable: true },
-  { key: 'role', header: 'Role', sortable: true },
-  { key: 'status', header: 'Status', sortable: true },
+  { header: 'Name', render: (item: any) => item.name },
+  { header: 'Email', render: (item: any) => item.email },
+  { header: 'Role', render: (item: any) => item.role },
+  { header: 'Status', render: (item: any) => (
+    <span className={`px-2 py-1 rounded text-sm ${
+      item.status === 'Active' 
+        ? 'bg-green-100 text-green-800' 
+        : item.status === 'Inactive'
+        ? 'bg-red-100 text-red-800'
+        : 'bg-yellow-100 text-yellow-800'
+    }`}>
+      {item.status}
+    </span>
+  )},
 ];
 
 export const Default: Story = {
@@ -33,6 +43,14 @@ export const Default: Story = {
     data: sampleData,
     columns,
     loading: false,
+    search: '',
+    onSearch: (value: string) => console.log('Search:', value),
+    page: 1,
+    limit: 10,
+    totalPages: 1,
+    total: sampleData.length,
+    onPageChange: (page: number) => console.log('Page:', page),
+    onLimitChange: (limit: number) => console.log('Limit:', limit),
   },
 };
 
@@ -41,6 +59,14 @@ export const Loading: Story = {
     data: [],
     columns,
     loading: true,
+    search: '',
+    onSearch: () => {},
+    page: 1,
+    limit: 10,
+    totalPages: 0,
+    total: 0,
+    onPageChange: () => {},
+    onLimitChange: () => {},
   },
 };
 
@@ -49,6 +75,15 @@ export const Empty: Story = {
     data: [],
     columns,
     loading: false,
+    search: '',
+    onSearch: () => {},
+    page: 1,
+    limit: 10,
+    totalPages: 0,
+    total: 0,
+    onPageChange: () => {},
+    onLimitChange: () => {},
+    emptyMessage: 'No se encontraron usuarios',
   },
 };
 
@@ -57,11 +92,14 @@ export const WithPagination: Story = {
     data: sampleData,
     columns,
     loading: false,
-    pagination: {
-      page: 1,
-      totalPages: 5,
-      onPageChange: (page: number) => console.log('Page:', page),
-    },
+    search: '',
+    onSearch: () => {},
+    page: 2,
+    limit: 10,
+    totalPages: 5,
+    total: 50,
+    onPageChange: (page: number) => console.log('Page:', page),
+    onLimitChange: () => {},
   },
 };
 
@@ -70,41 +108,15 @@ export const WithSearch: Story = {
     data: sampleData,
     columns,
     loading: false,
-    search: {
-      value: '',
-      onChange: (value: string) => console.log('Search:', value),
-      placeholder: 'Search users...',
-    },
-  },
-};
-
-export const WithSelection: Story = {
-  args: {
-    data: sampleData,
-    columns,
-    loading: false,
-    selectable: true,
-    onSelectionChange: (selected: any[]) => console.log('Selected:', selected),
-  },
-};
-
-export const FullFeatured: Story = {
-  args: {
-    data: sampleData,
-    columns,
-    loading: false,
-    selectable: true,
-    pagination: {
-      page: 1,
-      totalPages: 3,
-      onPageChange: (page: number) => console.log('Page:', page),
-    },
-    search: {
-      value: '',
-      onChange: (value: string) => console.log('Search:', value),
-      placeholder: 'Search users...',
-    },
-    onRowClick: (row: any) => console.log('Clicked:', row),
+    search: 'John',
+    onSearch: (value: string) => console.log('Search:', value),
+    page: 1,
+    limit: 10,
+    totalPages: 1,
+    total: 1,
+    onPageChange: () => {},
+    onLimitChange: () => {},
+    searchPlaceholder: 'Buscar usuarios...',
   },
 };
 
@@ -119,10 +131,13 @@ export const ManyRows: Story = {
     })),
     columns,
     loading: false,
-    pagination: {
-      page: 1,
-      totalPages: 4,
-      onPageChange: (page: number) => console.log('Page:', page),
-    },
+    search: '',
+    onSearch: () => {},
+    page: 1,
+    limit: 10,
+    totalPages: 2,
+    total: 20,
+    onPageChange: (page: number) => console.log('Page:', page),
+    onLimitChange: () => {},
   },
 };

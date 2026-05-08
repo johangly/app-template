@@ -52,3 +52,17 @@ export const Small: Story = {
     label: 'Button',
   },
 };
+
+export const Butt: Story = {
+  args: {
+    primary: false,
+    label: "Button"
+  }
+};
+
+export const Butt2: Story = {
+  args: {
+    primary: false,
+    label: "Button"
+  }
+};
