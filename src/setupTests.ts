@@ -1,24 +1,30 @@
 import '@testing-library/jest-dom';
 
 // Mock matchMedia
-global.matchMedia = global.matchMedia || function() {
+global.matchMedia = global.matchMedia || function(query: string) {
   return {
     matches: false,
+    media: query,
+    onchange: null,
     addListener: jest.fn(),
     removeListener: jest.fn(),
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
     dispatchEvent: jest.fn(),
-  };
+  } as MediaQueryList;
 };
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
+  root: Element | null = null;
+  rootMargin: string = '';
+  thresholds: ReadonlyArray<number> = [];
+  
   constructor() {}
   disconnect() {}
   observe() {}
   unobserve() {}
-  takeRecords() {
+  takeRecords(): IntersectionObserverEntry[] {
     return [];
   }
 };
