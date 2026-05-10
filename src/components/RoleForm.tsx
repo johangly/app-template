@@ -1,6 +1,8 @@
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { roleSchema, RoleFormData } from '../lib/validations';
 import { Key } from 'lucide-react';
-import FormField from './FormField';
-import FormTextArea from './FormTextArea';
+import { useEffect } from 'react';
 
 interface RoleFormProps {
     setModal: (value: boolean) => void;
@@ -20,7 +22,7 @@ export default function RoleForm({
     setModal,
     form,
     handleChange,
-    handleSubmit,
+    handleSubmit: originalHandleSubmit,
     loading,
     error,
     idEditingRole,
@@ -29,28 +31,74 @@ export default function RoleForm({
     togglePermission,
     saveRolePermissions,
 }: RoleFormProps) {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm<RoleFormData>({
+        resolver: zodResolver(roleSchema),
+        defaultValues: {
+            name: form.name,
+            description: form.description,
+        },
+    });
+
+    useEffect(() => {
+        reset({
+            name: form.name,
+            description: form.description,
+        });
+    }, [form, reset]);
+
+    const onSubmit = (data: RoleFormData) => {
+        Object.entries(data).forEach(([key, value]) => {
+            handleChange({
+                target: { name: key, value }
+            } as React.ChangeEvent<HTMLInputElement>);
+        });
+        
+        const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+        originalHandleSubmit(fakeEvent);
+    };
+
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
-            <FormField
-                id="name"
-                label="Nombre"
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Nombre del rol"
-                required
-            />
-            <FormTextArea
-                id="description"
-                label="Descripción"
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                placeholder="Descripción del rol"
-                rows={3}
-                required
-            />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* Nombre */}
+            <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Nombre
+                </label>
+                <input
+                    {...register("name")}
+                    type="text"
+                    placeholder="Nombre del rol"
+                    className={`w-full h-10 px-3 rounded-lg border bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white ${
+                        errors.name ? "border-red-500 focus-visible:ring-red-500" : "border-input"
+                    }`}
+                />
+                {errors.name && (
+                    <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+                )}
+            </div>
+
+            {/* Descripción */}
+            <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Descripción
+                </label>
+                <textarea
+                    {...register("description")}
+                    placeholder="Descripción del rol"
+                    rows={3}
+                    className={`w-full px-3 py-2 rounded-lg border bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white ${
+                        errors.description ? "border-red-500 focus-visible:ring-red-500" : "border-input"
+                    }`}
+                />
+                {errors.description && (
+                    <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>
+                )}
+            </div>
 
             <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
                 <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">

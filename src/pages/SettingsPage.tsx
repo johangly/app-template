@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { twMerge } from 'tailwind-merge';
 import { Settings, Mail, Lock, Shield, Save } from 'lucide-react';
 import { systemConfigService, SystemConfigItem } from '../services/systemConfigService';
+import { NumberInput } from '../components/ui/number-input';
 import toast from 'react-hot-toast';
 
 export default function SettingsPage() {
@@ -132,11 +133,12 @@ export default function SettingsPage() {
                                                         />
                                                     </button>
                                                 ) : config.type === 'number' ? (
-                                                    <input
-                                                        type="number"
+                                                    <NumberInput
                                                         value={getValue(config) as number}
-                                                        onChange={(e) => handleChange(config.key, parseInt(e.target.value) || 0)}
-                                                        className="w-24 h-10 px-3 rounded-lg border border-input bg-background text-sm text-right ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-900"
+                                                        onChange={(value) => handleChange(config.key, value)}
+                                                        min={config.key === 'max_login_attempts' ? 1 : 1}
+                                                        max={config.key === 'max_login_attempts' ? 10 : 60}
+                                                        step={1}
                                                     />
                                                 ) : (
                                                     <input

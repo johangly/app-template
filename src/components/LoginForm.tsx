@@ -1,4 +1,8 @@
 import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, LoginFormData } from "../lib/validations";
+import { FormField } from "./FormFieldRHF";
 
 interface LoginFormProps {
   email: string;
@@ -17,8 +21,28 @@ export default function LoginForm({
   handleLogin,
   loading,
 }: LoginFormProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: email,
+      password: password,
+    },
+  });
+
+  const onSubmit = (data: LoginFormData) => {
+    setEmail(data.email);
+    setPassword(data.password);
+    // Crear un evento fake para compatibilidad con handleLogin existente
+    const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+    handleLogin(fakeEvent);
+  };
+
   return (
-    <form className="flex flex-col gap-4" onSubmit={handleLogin}>
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
       <div>
         <label
           htmlFor="email"
@@ -27,14 +51,17 @@ export default function LoginForm({
           Correo electrónico
         </label>
         <input
+          {...register("email")}
           id="email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
           placeholder="ejemplo@correo.com"
-          className="w-full h-10 px-4 rounded-lg border border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-900"
-          required
+          className={`w-full h-10 px-4 rounded-lg border bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white ${
+            errors.email ? "border-red-500 focus-visible:ring-red-500" : "border-input"
+          }`}
         />
+        {errors.email && (
+          <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
+        )}
       </div>
       <div>
         <label
@@ -44,14 +71,17 @@ export default function LoginForm({
           Contraseña
         </label>
         <input
+          {...register("password")}
           id="password"
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
           placeholder="••••••••"
-          className="w-full h-10 px-4 rounded-lg border border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-900"
-          required
+          className={`w-full h-10 px-4 rounded-lg border bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white ${
+            errors.password ? "border-red-500 focus-visible:ring-red-500" : "border-input"
+          }`}
         />
+        {errors.password && (
+          <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>
+        )}
       </div>
       <button
         type="submit"

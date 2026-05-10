@@ -1,5 +1,7 @@
-import FormField from './FormField';
-import FormSelect from './FormSelect';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { userSchema, UserFormData } from '../lib/validations';
+import { useEffect } from 'react';
 
 interface UserFormProps {
     setModal: (value: boolean) => void;
@@ -17,60 +19,185 @@ export default function UserForm({
     setModal,
     form,
     handleChange,
-    handleSubmit,
+    handleSubmit: originalHandleSubmit,
     loading,
     error,
     idEditingUser,
     roleOptions,
 }: UserFormProps) {
-    const fields = [
-        { label: 'Nombre completo', type: 'text' as const, name: 'name', placeholder: 'Tu nombre' },
-        { label: 'Correo electrónico', type: 'email' as const, name: 'email', placeholder: 'ejemplo@correo.com' },
-        { label: 'Contraseña', type: 'password' as const, name: 'password', placeholder: idEditingUser ? '•••••••• (dejar vacío para mantener)' : '••••••••' },
-        { label: 'Confirmar contraseña', type: 'password' as const, name: 'confirmPassword', placeholder: '••••••••' },
-    ];
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: { errors },
+        reset,
+    } = useForm<UserFormData>({
+        resolver: zodResolver(userSchema),
+        defaultValues: {
+            name: form.name,
+            email: form.email,
+            password: form.password,
+            confirmPassword: form.confirmPassword,
+            roleId: form.roleId,
+            isActive: form.isActive,
+        },
+    });
+
+    // Sincronizar con form externo
+    useEffect(() => {
+        reset({
+            name: form.name,
+            email: form.email,
+            password: form.password,
+            confirmPassword: form.confirmPassword,
+            roleId: form.roleId,
+            isActive: form.isActive,
+        });
+    }, [form, reset]);
+
+    const onSubmit = (data: UserFormData) => {
+        // Actualizar form externo
+        Object.entries(data).forEach(([key, value]) => {
+            handleChange({
+                target: { name: key, value: key === 'roleId' ? Number(value) : value }
+            } as React.ChangeEvent<HTMLInputElement>);
+        });
+        
+        // Llamar submit original
+        const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+        originalHandleSubmit(fakeEvent);
+    };
 
     return (
-        <form className="space-y-4" onSubmit={handleSubmit}>
-            <FormSelect
-                label="Rol"
-                value={form.roleId ? form.roleId.toString() : ''}
-                onValueChange={(val) => handleChange({ target: { name: 'roleId', value: val } } as React.ChangeEvent<HTMLSelectElement>)}
-                options={roleOptions.map(r => ({ value: r.id, label: r.name }))}
-                placeholder="Seleccione un rol"
-            />
-
-            {fields.map((field) => (
-                <FormField
-                    key={field.name}
-                    id={field.name}
-                    label={field.label}
-                    type={field.type}
-                    name={field.name}
-                    value={form[field.name as keyof typeof form] as string}
-                    onChange={handleChange}
-                    placeholder={field.placeholder}
-                    required={!idEditingUser && field.type === 'password'}
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+            {/* Rol */}
+            <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Rol
+                </label>
+                <Controller
+                    name="roleId"
+                    control={control}
+                    render={({ field }) => (
+                        <select
+                            {...field}
+                            value={field.value || ''}
+                            onChange={(e) => field.onChange(Number(e.target.value))}
+                            className={`w-full h-10 px-3 rounded-lg border bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white ${
+                                errors.roleId ? "border-red-500 focus-visible:ring-red-500" : "border-input"
+                            }`}
+                        >
+                            <option value="">Seleccione un rol</option>
+                            {roleOptions.map((role) => (
+                                <option key={role.id} value={role.id}>
+                                    {role.name}
+                                </option>
+                            ))}
+                        </select>
+                    )}
                 />
-            ))}
+                {errors.roleId && (
+                    <p className="text-xs text-red-500 mt-1">{errors.roleId.message}</p>
+                )}
+            </div>
 
+            {/* Nombre */}
+            <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Nombre completo
+                </label>
+                <input
+                    {...register("name")}
+                    type="text"
+                    placeholder="Tu nombre"
+                    className={`w-full h-10 px-3 rounded-lg border bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white ${
+                        errors.name ? "border-red-500 focus-visible:ring-red-500" : "border-input"
+                    }`}
+                />
+                {errors.name && (
+                    <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+                )}
+            </div>
+
+            {/* Email */}
+            <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Correo electrónico
+                </label>
+                <input
+                    {...register("email")}
+                    type="email"
+                    placeholder="ejemplo@correo.com"
+                    className={`w-full h-10 px-3 rounded-lg border bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white ${
+                        errors.email ? "border-red-500 focus-visible:ring-red-500" : "border-input"
+                    }`}
+                />
+                {errors.email && (
+                    <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
+                )}
+            </div>
+
+            {/* Contraseña */}
+            <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Contraseña
+                </label>
+                <input
+                    {...register("password")}
+                    type="password"
+                    placeholder={idEditingUser ? '•••••••• (dejar vacío para mantener)' : '••••••••'}
+                    className={`w-full h-10 px-3 rounded-lg border bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white ${
+                        errors.password ? "border-red-500 focus-visible:ring-red-500" : "border-input"
+                    }`}
+                />
+                {errors.password && (
+                    <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>
+                )}
+            </div>
+
+            {/* Confirmar Contraseña */}
+            <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Confirmar contraseña
+                </label>
+                <input
+                    {...register("confirmPassword")}
+                    type="password"
+                    placeholder="••••••••"
+                    className={`w-full h-10 px-3 rounded-lg border bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white ${
+                        errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : "border-input"
+                    }`}
+                />
+                {errors.confirmPassword && (
+                    <p className="text-xs text-red-500 mt-1">{errors.confirmPassword.message}</p>
+                )}
+            </div>
+
+            {/* Usuario activo (solo edición) */}
             {idEditingUser && (
                 <div className="flex items-center gap-3 pt-2">
-                    <input
-                        id="isActive"
-                        type="checkbox"
+                    <Controller
                         name="isActive"
-                        checked={form.isActive}
-                        onChange={handleChange}
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        control={control}
+                        render={({ field }) => (
+                            <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={(e) => field.onChange(e.target.checked)}
+                                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            />
+                        )}
                     />
-                    <label htmlFor="isActive" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Usuario activo
                     </label>
                 </div>
             )}
 
+            {/* Error general */}
             {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+            
+            {/* Botón */}
             <button
                 type="submit"
                 className="w-full py-2.5 mt-2 bg-blue-600 hover:bg-blue-700 transition-colors text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-60 h-10"
